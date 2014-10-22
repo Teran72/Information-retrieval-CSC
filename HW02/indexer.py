@@ -71,11 +71,6 @@ def print_index(d, docnames, foutname):
                 print >>fout, pos,
         print >>fout
         
-        #valset = d[key]
-        #for ndoc in valset:
-        #    print >>fout, ndoc,
-        #print >>fout
-
     fout.close()
     return
 
@@ -86,11 +81,8 @@ if __name__ == "__main__":
     else:
         directory = sys.argv[1]
         indexfile = sys.argv[2]
-        #directory = "\\Source\\"
-        #indexfile = "index.inv"
         morph = pymorphy2.MorphAnalyzer()
 
-        directory = os.getcwd() + '\\Source\\'
         filenames = os.listdir(directory)
         [d, docnames] = compute_files(directory, filenames, morph)
         print u'saving index:'
