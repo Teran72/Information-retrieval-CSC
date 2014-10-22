@@ -29,18 +29,20 @@ def compute_files(directory, filenames, morph):
             
             wordlist = filter(None, re.split("[/\\\ .,<>\t\n\[\]'\"!?:;(){}]+", doc))
             
-            for word in wordlist[1:]:
+            pos = 0
+            for word in wordlist:
                 utfword = word.decode('utf8')
                 uword = unicode(utfword)
                 parses = morph.parse(uword)
                 for pars in parses:
                     key = pars.normal_form.encode('utf8')
-                    if d.get(key, []) == []:
-                        d[key] = [docnum]
+                    d[key] = d.get(key, {})
+                    if d[key].get(docnum, []) == []:
+                        d[key][docnum] = [pos]
                     else:
-                        if (d[key][-1] != docnum):
-                            d[key] += [docnum]
-            
+                        if (d[key][docnum][-1] != pos):
+                            d[key][docnum] += [pos]
+                pos += 1
         curfile.close()
     return [d, docnames]
 
@@ -57,10 +59,22 @@ def print_index(d, docnames, foutname):
     
     for key in keys:
         print >>fout, key,
-        valset = d[key]
-        for ndoc in valset:
-            print >>fout, ndoc,
+        docs = d[key].keys()
+        docs.sort()
+        
+        for docnum in docs:
+            print >>fout, docnum,
+            poss = d[key][docnum]
+            poss.sort()
+            print >>fout, len(poss),
+            for pos in poss:
+                print >>fout, pos,
         print >>fout
+        
+        #valset = d[key]
+        #for ndoc in valset:
+        #    print >>fout, ndoc,
+        #print >>fout
 
     fout.close()
     return
@@ -72,8 +86,8 @@ if __name__ == "__main__":
     else:
         directory = sys.argv[1]
         indexfile = sys.argv[2]
-        directory = "\\Source\\"
-        indexfile = "index.inv"
+        #directory = "\\Source\\"
+        #indexfile = "index.inv"
         morph = pymorphy2.MorphAnalyzer()
 
         directory = os.getcwd() + '\\Source\\'
