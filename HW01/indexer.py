@@ -68,7 +68,6 @@ if __name__ == "__main__":
         indexfile = sys.argv[2]
         morph = pymorphy2.MorphAnalyzer()
 
-        directory = os.getcwd() + '\\Source\\'
         filenames = os.listdir(directory)
         d = compute_files(directory, filenames, morph)
         print u'saving index:'
